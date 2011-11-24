@@ -4,13 +4,22 @@ PROJECTNAME=''
 USERNAME=`whoami`
 USERS=( $USERNAME '_www' )
 
-showHelp() {
-    echo "########################################"
+showHeader() {
+    echo "##################################################"
     echo "# create Symfony2 standard project"
-    echo "########################################"
-    echo "Usage: ./create.sh -p <projectname>"
-    echo "########################################"
+    echo "##################################################"
 }
+
+showHelp() {
+    showHeader
+    echo "[INFO] Usage: ./create.sh -p <projectname>"
+    echo "##################################################"
+}
+
+showFooter() {
+    echo "##################################################"
+}
+
 
 createProject() {
     cloneSymfonyStandard
@@ -68,12 +77,13 @@ prepareReadme() {
 }
 
 showGitCommandSuggestions() {
-    echo "########################################"
-    echo "You should now add your project to GitHub."
-    echo "Please adjust the examples provided below to match your desired GitHub settings."
-    echo "    git remote add origin git@github.com:\$USERNAME/\$PROJECTNAME.git"
-    echo "    git push -u origin master"
-    echo "########################################"
+    echo "##################################################"
+    echo "# You should now add your project to GitHub.      "
+    echo "# Please adjust the examples provided below       "
+    echo "#       to match your desired GitHub settings.    "
+    echo "> git remote add origin git@github.com:\$USER/\$PROJECT.git"
+    echo "> git push -u origin master"
+    echo "##################################################"
 }
 
 while getopts ":p:h" opt; do
@@ -88,15 +98,29 @@ while getopts ":p:h" opt; do
             exit 0
             ;;
         \?)
-            echo "Invalid option: -$OPTARG" >&2
+            showHelp
+            echo "[ERROR] Invalid option: -$OPTARG" >&2
+            showFooter
             exit 1
             ;;
         :)
-            echo "Option -$OPTARG requires an argument." >&2
+            showHelp
+            echo "[ERROR] Option -$OPTARG requires an argument." >&2
+            showFooter
+            exit 0
             ;;
     esac
 done
 
-# @TODO add checking of requirements (php, etc.)
-createProject
-showGitCommandSuggestions
+if [ -n $PROJECTNAME ]; then
+    showHelp
+    echo "[ERROR] No project name provided!"
+    showFooter
+    exit 0
+else
+    # @TODO add checking of requirements (php, etc.)
+    showHeader
+    createProject
+    showGitCommandSuggestions
+    showFooter
+fi

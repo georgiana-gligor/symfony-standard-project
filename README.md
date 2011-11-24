@@ -7,3 +7,5 @@ Here are some starting points:
 * coto's shootProfile() https://github.com/coto/server-easy-install/blob/master/lib/core.sh
 * [the Big Daddy OS detection](http://git.savannah.gnu.org/gitweb/?p=config.git;a=blob;f=config.guess;hb=HEAD)
 
+Alternatives would include detecting the information needed using commands like
+curl -s http://localhost/phpinfo.php | grep  GROUP | cut -f5 -d">" | cut -f1 -d" "
