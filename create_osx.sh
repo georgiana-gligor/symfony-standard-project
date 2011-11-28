@@ -1,4 +1,9 @@
 #!/bin/bash
+###############################################################################
+# Creates a Symfony2 project starting from the latest symfony-standard version.
+# 
+# @since 2011-nov
+###############################################################################
 
 PROJECTNAME=''
 USERNAME=`whoami`
@@ -6,20 +11,38 @@ USERS=( $USERNAME '_www' )
 
 showHeader() {
     echo "##################################################"
-    echo "# create Symfony2 standard project"
-    echo "##################################################"
+    echo "[#] create Symfony2 standard project"
+    echo "[#]"
 }
 
 showHelp() {
     showHeader
-    echo "[INFO] Usage: ./create.sh -p <projectname>"
-    echo "##################################################"
+    echo "[INFO] Usage: ./`basename $0` -p <projectname>"
+    echo "[#]"
 }
 
 showFooter() {
     echo "##################################################"
 }
 
+checkProjectnameCorrect() {
+    ERRORMSG=""
+    if [ -z "$PROJECTNAME" ]; then
+        ERRORMSG="No project name."
+    # else
+        # TODO add alphanumeric+length validation
+    fi
+
+    if [ -n "$ERRORMSG" ]; then
+        exitWithError "$ERRORMSG"
+    fi
+}
+
+exitWithError() {
+    if [ -n "$1" ]; then
+        showHelp; echo "[ERR] $1"; showFooter; exit 1;
+    fi
+}
 
 createProject() {
     cloneSymfonyStandard
@@ -77,13 +100,13 @@ prepareReadme() {
 }
 
 showGitCommandSuggestions() {
-    echo "##################################################"
-    echo "# You should now add your project to GitHub.      "
-    echo "# Please adjust the examples provided below       "
-    echo "#       to match your desired GitHub settings.    "
+    echo "[#]"
+    echo "[#] You should now add your project to GitHub."
+    echo "[#] Please adjust the examples provided below"
+    echo "[#]       to match your desired GitHub settings."
     echo "> git remote add origin git@github.com:\$USER/\$PROJECT.git"
     echo "> git push -u origin master"
-    echo "##################################################"
+    echo "[#]"
 }
 
 while getopts ":p:h" opt; do
@@ -112,15 +135,24 @@ while getopts ":p:h" opt; do
     esac
 done
 
-if [ -n $PROJECTNAME ]; then
-    showHelp
-    echo "[ERROR] No project name provided!"
-    showFooter
-    exit 0
-else
-    # @TODO add checking of requirements (php, etc.)
-    showHeader
-    createProject
-    showGitCommandSuggestions
-    showFooter
-fi
+echo "[DEBUG] $PROJECTNAME"
+
+# if [ -n $PROJECTNAME ]; then
+#     showHelp
+#     echo "[ERROR] No project name provided!"
+#     showFooter
+#     exit 0
+# else
+
+# @TODO add checking of requirements (php, etc.)
+date
+
+checkProjectnameCorrect # script exits here in case something goes wrong
+
+showHeader
+createProject
+showGitCommandSuggestions
+showFooter
+
+date
+# fi
